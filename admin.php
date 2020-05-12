@@ -52,34 +52,36 @@ try {
     </head>
     <body>
     <form action="" method="post">
-        <table class="table is-hoverable is-fullwidth">
-            <thead>
-            <tr>
-                <th>Логин</th>
-                <th>Пароль</th>
-                <th>Имя</th>
-                <th>Email</th>
-                <th>Год гождения</th>
-                <th>Пол</th>
-                <th>Количество конечностей</th>
-                <th>Сверхспособности</th>
-                <th>Биография</th>
-                <th>Удалить</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                print('<tr>');
-                foreach ($row as $cell) {
-                    print('<td>' . $cell . '</td>');
-                }
-                print('<td><button class="button is-info is-small is-danger is-light" name="remove" type="submit" value="' . $row['login'] . '">x</button></td>');
-                print('</tr>');
-            }
-            ?>
-            </tbody>
-        </table>
+        <div class="table-container">
+          <table class="table is-hoverable is-fullwidth">
+              <thead>
+              <tr>
+                  <th>Логин</th>
+                  <th>Пароль</th>
+                  <th>Имя</th>
+                  <th>Email</th>
+                  <th>Год гождения</th>
+                  <th>Пол</th>
+                  <th>Количество конечностей</th>
+                  <th>Сверхспособности</th>
+                  <th>Биография</th>
+                  <th>Удалить</th>
+              </tr>
+              </thead>
+              <tbody>
+              <?php
+              while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                  print('<tr>');
+                  foreach ($row as $cell) {
+                      print('<td>' . $cell . '</td>');
+                  }
+                  print('<td><button class="button is-info is-small is-danger is-light" name="remove" type="submit" value="' . $row['login'] . '">x</button></td>');
+                  print('</tr>');
+              }
+              ?>
+              </tbody>
+          </table>
+        </div>
     </form>
     </body>
     <?php
