@@ -45,9 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 else {
 
   // Инициализируем логин и пароль из глобального массива $_POST.
-  $login = $_POST['login'];
+  $login = strip_tags($_POST['login']);
   // Не забываем захэшировать пароль с помощью алгоритма sha256.
-  $pass =  hash('sha256', $_POST['pass'], false);
+  $pass =  hash('sha256', strip_tags($_POST['pass']), false);
 
   $db = new PDO('mysql:host=localhost;dbname=u16671', $db_user, $db_pass, array(
     PDO::ATTR_PERSISTENT => true

@@ -18,6 +18,11 @@ if (empty($_SERVER['PHP_AUTH_USER']) ||
     exit();
 }
 
+// Используем метод Double Submit Cookie отсюда https://habr.com/ru/post/318748/
+// Создаем токен и помещаем его в куки, а также в input формы.
+$token = md5('ilovekubsu' . $_SERVER['PHP_AUTH_USER']);
+setcookie('token', $token, time() + 24 * 60 * 60);
+
 // Инициализируем переменные для подключения к базе данных.
 $db_user = 'u16671';   // Логин БД
 $db_pass = '3137204';  // Пароль БД
@@ -30,15 +35,17 @@ $db = new PDO('mysql:host=localhost;dbname=u16671', $db_user, $db_pass, array(
 // Если метод был POST, значит мы нажали на кнопку удаления.
 // Пробуем удалить запись из базы данных.
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  if ($_POST['token'] === $_COOKIE['token']) {
     try {
-        $stmt = $db->prepare('DELETE FROM web6 WHERE login = ?');
-        $stmt->execute(array(
-            $_POST['remove']
-        ));
+      $stmt = $db->prepare('DELETE FROM web6 WHERE login = ?');
+      $stmt->execute(array(
+        $_POST['remove']
+      ));
     } catch (PDOException $e) {
-        echo 'Ошибка: ' . $e->getMessage();
-        exit();
+      echo 'Ошибка: ' . $e->getMessage();
+      exit();
     }
+  }
 }
 
 try {
@@ -52,6 +59,7 @@ try {
     </head>
     <body>
     <form action="" method="post">
+        <input type="hidden" name="token" value="<?php print($token); ?>">
         <div class="table-container">
           <table class="table is-hoverable is-fullwidth">
               <thead>
@@ -73,9 +81,11 @@ try {
               while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                   print('<tr>');
                   foreach ($row as $cell) {
-                      print('<td>' . $cell . '</td>');
+                      print('<td>' . strip_tags($cell) . '</td>');
                   }
-                  print('<td><button class="button is-info is-small is-danger is-light" name="remove" type="submit" value="' . $row['login'] . '">x</button></td>');
+                  print('<td><button class="button is-info is-small is-danger is-light" name="remove" type="submit" value="'
+                  . strip_tags($row['login'])
+                  . '">x</button></td>');
                   print('</tr>');
               }
               ?>
